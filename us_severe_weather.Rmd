@@ -1,0 +1,19 @@
+---
+title: "US Severe Weather"
+author: "herchu1"
+output: html_document
+---
+
+## Synopsis
+
+
+## Data Processing
+
+
+## Results
+
+
+```{r}
+1+1
+```
+
