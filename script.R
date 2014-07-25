@@ -2,6 +2,7 @@
 
 # leer datos
 library(ggplot2)
+Sys.setlocale("LC_TIME", "C")
 stormdata <- read.csv(bzfile('repdata-data-StormData.csv.bz2'),
                       stringsAsFactors = F)
 
@@ -102,3 +103,36 @@ names(dmgspermonth)[2] <- "when"
 
 worstevents <- head(dmgspertype[worstdmgs, c("evtype")], n=5)
 dmgspermonthworst5 <- dmgspermonth[dmgspermonth$evtype %in% worstevents,]
+
+
+dmgspermonthworst5$dwhen <- as.Date(paste("1 ", dmgspermonthworst5$when),
+                                    format="%d %m %Y")
+
+
+
+
+#outliers<-dmgspermonthworst5[head(order(dmgspermonthworst5$damages, decreasing=T),n=5),]
+outl <- boxplot(dmgspermonthworst5$damages)$out
+
+ggplot(subset(dmgspermonthworst5, ! damages %in% outl),
+       aes(x=dwhen, y=damages/1000000)) +
+    geom_line(aes(group=1)) +
+    facet_grid(evtype~.)
+
+ggplot(subset(dmgspermonthworst5, damages %in% outl),
+       aes(x=dwhen, y=damages/1000000, colour=evtype)) +
+    geom_point()
+
+ggplot(subset(dmgspermonthworst5, damages %in% outl & damages < 10000000000),
+       aes(x=dwhen, y=damages/1000000, colour=evtype)) +
+    geom_point()
+
+
+ggplot(subset(dmgspermonthworst5, damages < 1000000000),
+       aes(x=dwhen, y=damages/1000000)) +
+    geom_line(aes(group=1)) +
+    facet_grid(evtype~.)
+
+
+
+
