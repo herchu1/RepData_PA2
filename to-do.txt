@@ -1,8 +1,22 @@
 To Do List
 
+
+
 Example:
 
 http://rpubs.com/rdpeng/13396
+
+
+
+Poner eventos en mayusculas
+Quitar s final
+COSTALSTORM a COASTAL STORM
+Hurrican Eduard
+ICE ON ROAD, ICE ROADS, ICY ROADS
+WINTER WEATHER/MIX, WINTER WEATHER MIX
+
+A valores 2011
+
 
 Questions
 ---------
