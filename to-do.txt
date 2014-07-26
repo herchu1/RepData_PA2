@@ -51,8 +51,8 @@ DAMAGES:
 A valores 2011
 
 + quitar output de setlocale.
-facets no se leen bien.
-    theme(strip.text.y = element_text(size = 8, colour = "red", angle = 90))
++ facets no se leen bien.
++    theme(strip.text.y = element_text(size = 8, colour = "red", angle = 90))
 + correccion de porcentaje.
 
 

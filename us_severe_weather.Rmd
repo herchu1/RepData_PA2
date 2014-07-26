@@ -41,7 +41,7 @@ todollars <- function(ammount, expfactor) {
 }
 storms <- data.frame(as.Date(stormdata$BGN_DATE, '%m/%d/%Y'),
                      stormdata$STATE,
-                     as.factor(stormdata$EVTYPE),
+                     stormdata$EVTYPE,
                      stormdata$FATALITIES,
                      stormdata$INJURIES,
                      mapply(todollars, stormdata$PROPDMG, stormdata$PROPDMGEXP),
@@ -55,15 +55,32 @@ names(storms) <- c("date","state","evtype",
 As stated in http://www.ncdc.noaa.gov/stormevents/details.jsp the code for
 events is more detailed since January 1996. The last recorded event in
 this data file is November 2011. We filtered the data and, from now on,
-we only processed events from December 1995 so we had 6 complete years.
+we only processed events from January 1996.
+We did some small cleansing in the event type variable. We transformed
+all string to lower case and normalized hurricanes and typhoons to
+"hurricane". Further normalization were discarded because it could
+let to imputation errors. For instance, "heavy rain/high surf"
+could either fall in "heavy rain" or "high surf" categories.
 We also didn't differentiate between property and crop (agriculture)
 damages and considered both of them together.
 
 ```{r}
-storms96 <- storms[which(as.numeric(format(storms$date, "%Y%m")) >= 199512),]
+storms96 <- storms[which(as.numeric(format(storms$date, "%Y%m")) >= 199601),]
+
+storms96$evtype <- tolower(storms96$evtype)
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+storms96$evtype <- trim(storms96$evtype)
+
+storms96$evtype[storms96$evtype == "hurricane edouard"] <- "hurricane"
+storms96$evtype[storms96$evtype == "hurricane/typhoon"] <- "hurricane"
+storms96$evtype[storms96$evtype == "typhoon"] <- "hurricane"
+
+storms96$evtype <- as.factor(storms96$evtype)
+
 storms96$damages <- storms96$propdmg + storms96$cropdmg
 
 ```
+
 
 
 ## Results
@@ -97,11 +114,12 @@ storms96[storms96$fatalities >= 50, c(3,1,2,4,5)]
 ```
 
 The 5 worst events presented in descending order according
-the fatalities per year they cause are:
+the fatalities per year (factor 5.916 because on 2011 there
+are only 11 months) they cause are:
 
 ```{r}
 worstfatl <- order(fatlpertype$fatalities, decreasing=T)
-fatlpertype$fatalitiesperyear <- round(fatlpertype$fatalities / 6)
+fatlpertype$fatalitiesperyear <- round(fatlpertype$fatalities / 5.916)
 head(fatlpertype[worstfatl, c("evtype","fatalitiesperyear")], n=5)
 ```
 
@@ -109,7 +127,7 @@ The same table ordered by injuries:
 
 ```{r}
 worstinjr <- order(injrpertype$injuries, decreasing=T)
-injrpertype$injuriesperyear <- round(injrpertype$injuries / 6)
+injrpertype$injuriesperyear <- round(injrpertype$injuries / 5.916)
 head(injrpertype[worstinjr, c("evtype","injuriesperyear")], n=5)
 ```
 
@@ -123,7 +141,7 @@ dmgspertype <- aggregate(damages ~ evtype,
                          data=storms96[storms96$damages > 0,],
                          FUN=sum)
 worstdmgs <- order(dmgspertype$damages, decreasing=T)
-dmgspertype$damagesperyear <- round(dmgspertype$damages / 6000000)
+dmgspertype$damagesperyear <- round(dmgspertype$damages / (5.916 * 1000000))
 head(dmgspertype[worstdmgs, c("evtype","damagesperyear")], n=5)
 ```
 
@@ -160,10 +178,10 @@ It's only shown the 5 worst bad weather event types._
 
 We conclude that Excessive Heat is the 'hidden plague'. Its lack of catastrophic
 images doesn't serve well from a newstand point of view. Regrettably it
-causes 300 deaths and 1065 injured people per year.
-Tornadoes, 252 fatalities and 3,445 injuries. Floods of different types
-led to 217 deaths.
+causes aproximately 300 deaths and 1000 injured people per year.
+Tornadoes, 250 fatalities and 3,500 injuries. Floods of different types
+led to more than 200 deaths.
 
 However floods, hurricanes, storms and tornados induce less fatalities than
-heat waves but enourmous ammount of damages: 24.8, 12, 7.2 and 4.2 billions
+heat waves but enourmous ammount of damages: near to 25, 15, 7 and 4 billions
 of dollars per year respectively.

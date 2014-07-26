@@ -17,7 +17,7 @@ todollars <- function(ammount, expfactor) {
 
 storms <- data.frame(as.Date(stormdata$BGN_DATE, '%m/%d/%Y'),
                      stormdata$STATE,
-                     as.factor(stormdata$EVTYPE),
+                     stormdata$EVTYPE,
                      stormdata$FATALITIES,
                      stormdata$INJURIES,
                      mapply(todollars, stormdata$PROPDMG, stormdata$PROPDMGEXP),
@@ -34,6 +34,9 @@ names(storms) <- c("date","state","evtype",
 # nov 95
 
 storms96 <- storms[which(as.numeric(format(storms$date, "%Y%m")) >= 199512),]
+
+# cleansing
+storms96$evtype <- tolower(storms96$evtype)
 
 # sumar variables
 storms96$damages <- storms96$propdmg + storms96$cropdmg
