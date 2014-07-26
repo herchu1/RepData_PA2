@@ -83,10 +83,10 @@ injrpertype <- aggregate(injuries ~ evtype,
                          FUN=sum)
 ```                         
 
-Most the bad weather events didn't cause any victims.
+Most the bad weather events (1.8%) didn't cause any victims.
 
 ```{r}
-1 - round(sum(storms96$fatalities == 0 & storms96$fatalities == 0)
+100 - round(sum(storms96$fatalities == 0 & storms96$fatalities == 0)
       / nrow(storms96) * 100, 1)
 ```
 
@@ -132,6 +132,7 @@ head(dmgspertype[worstdmgs, c("evtype","damagesperyear")], n=5)
 Filtering outliers shows that storms and bad weather causes
 great lost in properties and agriculture throughout the year
 summing up high ammount of liabilities.
+We used R boxplot to identify outliers.
 
 ```{r}
 dmgspermonth <- aggregate(damages ~ evtype + format(date, "%m %Y"),
@@ -141,7 +142,7 @@ worstevents <- head(dmgspertype[worstdmgs, c("evtype")], n=5)
 dmgspermonthworst5 <- dmgspermonth[dmgspermonth$evtype %in% worstevents,]
 dmgspermonthworst5$dwhen <- as.Date(paste("1 ", dmgspermonthworst5$when),
                                     format="%d %m %Y")
-outl <- boxplot(dmgspermonthworst5$damages)$out
+outl <- boxplot(dmgspermonthworst5$damages, plot=F)$out
 ggplot(subset(dmgspermonthworst5, ! damages %in% outl),
        aes(x=dwhen, y=damages/1000000)) +
     geom_line(aes(group=1)) +
@@ -149,6 +150,7 @@ ggplot(subset(dmgspermonthworst5, ! damages %in% outl),
     labs(x="Date of Event", y="Damages (millions of US$)",
          title="Damages per type since December 1995.")
 ```
+
 _Figure 1: Damages since December 1995 in millions of US$ without outliers.
 It's only shown the 5 worst bad weather event types._
 
