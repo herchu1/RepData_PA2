@@ -1,14 +1,83 @@
 ---
-title: "US Severe Weather"
+title: "Worsts Bad Weather Events Cause Enormous Losts in Lives and Properties."
 author: "herchu1"
 output: html_document
 ---
 
 ## Synopsis
 
+Although the citizens are aware of the damages that severe bad weather
+events produce due to the general public media, the total quantities of losts
+in human life and properties throughout the years it's not well known.
+We analized the weather events that causes the worst damages. We compared
+the events identifying which provokes more lives lost against those that
+results in more properties lost. We also separated the outstanding events
+(identifying outliers) to emphasize on the less publicized but more common
+ones.
 
 ## Data Processing
 
+For this study we used the U.S. National Oceanic and Atmospheric
+Administration's (NOAA) storm database. It records major weather
+events since 1950 including location, duration and estimates in
+property damages and fatalities and injuries.
+
+The data comes in a cvs compressed file.
+Estimates of damages are coded in thousands, millions and billions
+dollars. We transformed them to dollars units.
+
+```{r}
+library(ggplot2)
+Sys.setlocale("LC_TIME", "C")
+stormdata <- read.csv(bzfile('repdata-data-StormData.csv.bz2'),
+                      stringsAsFactors = F)
+
+todollars <- function(ammount, expfactor) {
+    if (expfactor == "K") { ammount * 1000 }
+    else if (expfactor == "M") { ammount * 1000000 }
+    else if (expfactor == "B") { ammount * 1000000000 }
+    else { ammount }
+}
+
+storms <- data.frame(as.Date(stormdata$BGN_DATE, '%m/%d/%Y'),
+                     stormdata$STATE,
+                     as.factor(stormdata$EVTYPE),
+                     stormdata$FATALITIES,
+                     stormdata$INJURIES,
+                     mapply(todollars, stormdata$PROPDMG, stormdata$PROPDMGEXP),
+                     mapply(todollars, stormdata$CROPDMG, stormdata$CROPDMGEXP),
+                     stringsAsFactors=F
+)
+
+names(storms) <- c("date","state","evtype",
+                   "fatalities","injuries","propdmg","cropdmg")
+```
+
+As stated in http://www.ncdc.noaa.gov/stormevents/details.jsp the code for
+events is more detailed since January 1996. The last recorded event in
+this data file is November 2011. We filtered the data and, from now on,
+we only processed events from December 1995 so we had 6 complete years.
+We also didn't differentiate between property and crop (agriculture)
+damages and considered both of them together.
+
+```{r}
+storms96 <- storms[which(as.numeric(format(storms$date, "%Y%m")) >= 199512),]
+storms96$damages <- storms96$propdmg + storms96$cropdmg
+
+```
+
+
+### Human Life Costs
+
+```{r}
+fatlpertype <- aggregate(fatalities ~ evtype,
+                    data=storms96[storms96$fatalities > 0,],
+                    FUN=sum)
+
+injrpertype <- aggregate(injuries ~ evtype,
+                         data=storms96[storms96$injuries > 0,],
+                         FUN=sum)
+```                         
 
 ## Results
 
