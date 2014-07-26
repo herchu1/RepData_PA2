@@ -131,7 +131,10 @@ ggplot(subset(dmgspermonthworst5, damages %in% outl & damages < 10000000000),
 ggplot(subset(dmgspermonthworst5, damages < 1000000000),
        aes(x=dwhen, y=damages/1000000)) +
     geom_line(aes(group=1)) +
-    facet_grid(evtype~.)
+    facet_grid(evtype~.) +
+    labs(x="Date of Event", y="Damages (millions of US$)",
+         title="Damages per type since 1996.")
+
 
 
 
