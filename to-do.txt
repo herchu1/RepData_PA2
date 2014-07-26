@@ -11,18 +11,21 @@ http://rpubs.com/rdpeng/13396
 Checklist.
 ---------
 
-Title.    resumen de 1 linea.
-Synopsis. menos de 10 oraciones.
-Data Processing.
-Results.
++ Title.    resumen de 1 linea.
++ Synopsis. menos de 10 oraciones.
++ Data Processing.
++ Results.
 + 1 a 3 gráficos.
-empezar con el bz2.
-which types of events are most harmful to population health?
-which types of events have the greatest economic consequences?
-reproducible
++ empezar con el bz2.
++ which types of events are most harmful to population health?
++ which types of events have the greatest economic consequences?
++ reproducible
 
-figure(s) have descriptive captions
-description and justification for any data transformations
++ figure(s) have descriptive captions
++ description and justification for any data transformations
+
+Conclusions
+Mejor borde de los facets.
 
 
 Graficos
@@ -30,7 +33,7 @@ Graficos
 
 + Titulos
 + Etiquetas de Ejes
-Unidades.
++ Unidades.
 
 
 Afinar
@@ -47,7 +50,10 @@ WINTER WEATHER/MIX, WINTER WEATHER MIX
 DAMAGES:
 A valores 2011
 
-
+quitar output de setlocale.
+facets no se leen bien.
+    theme(strip.text.y = element_text(size = 8, colour = "red", angle = 90))
+correccion de porcentaje.
 
 
 

@@ -57,8 +57,8 @@ dmgspertype <- aggregate(damages ~ evtype,
 
 
 # eventos sin victimas
-round(sum(storms96$fatalities == 0 & storms96$fatalities == 0)
-      / nrow(storms96) * 100, 1)
+round(sum(storms96$fatalities != 0 | storms96$fatalities != 0)
+            / nrow(storms96) * 100, 1)
 
 # muchas victimas
 storms96[storms96$fatalities >= 50,]
