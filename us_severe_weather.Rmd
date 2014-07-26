@@ -67,7 +67,11 @@ storms96$damages <- storms96$propdmg + storms96$cropdmg
 ```
 
 
+## Results
+
 ### Human Life Costs
+
+We grouped the event types by the casualties they cause.
 
 ```{r}
 fatlpertype <- aggregate(fatalities ~ evtype,
@@ -79,7 +83,37 @@ injrpertype <- aggregate(injuries ~ evtype,
                          FUN=sum)
 ```                         
 
-## Results
+Most the bad weather events didn't cause any victims.
+
+```{r}
+1 - round(sum(storms96$fatalities == 0 & storms96$fatalities == 0)
+      / nrow(storms96) * 100, 1)
+```
+
+But some of them were breathless and hard to forget like the Joplin
+tornado and the heatwaves in the Midwest.
+
+```{r}
+storms96[storms96$fatalities >= 50, c(3,1,2,4,5)]
+```
+
+The 5 worst events presented in descending order according
+the fatalities per year they cause are:
+
+```{r}
+worstfatl <- order(fatlpertype$fatalities, decreasing=T)
+fatlpertype$fatalitiesperyear <- round(fatlpertype$fatalities / 6)
+head(fatlpertype[worstfatl, c("evtype","fatalitiesperyear")], n=5)
+```
+
+The same table ordered by injuries:
+
+```{r}
+worstinjr <- order(injrpertype$injuries, decreasing=T)
+injrpertype$injuriesperyear <- round(injrpertype$injuries / 6)
+head(injrpertype[worstinjr, c("evtype","injuriesperyear")], n=5)
+```
+
 
 
 ```{r}
