@@ -53,11 +53,13 @@ names(storms) <- c("date","state","evtype",
 ```
 
 As stated in http://www.ncdc.noaa.gov/stormevents/details.jsp the code for
-events is more detailed since January 1996. The last recorded event in
-this data file is November 2011. We filtered the data and, from now on,
+events is more detailed since January 1996.
+The last recorded event in this data file is November 2011.
+We filtered the data and, from now on,
 we only processed events from January 1996.
 We did some small cleansing in the event type variable. We transformed
-all string to lower case and normalized hurricanes and typhoons to
+all string to lower case, trimming white spaces.
+We normalized hurricanes and typhoons to
 "hurricane". We applied similar processes to thunderstorms, floods
 and ice. We discarded further normalization because it could
 let to imputation errors. For instance, "heavy rain/high surf"
