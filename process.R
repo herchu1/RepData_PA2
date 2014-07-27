@@ -1,48 +1,3 @@
-# Draft script
-
-# leer datos
-library(ggplot2)
-Sys.setlocale("LC_TIME", "C")
-stormdata <- read.csv(bzfile('repdata-data-StormData.csv.bz2'),
-                      stringsAsFactors = F)
-
-# extraer columnas.
-# fecha. estado. evtype. fatalities. injuries. propdmg cropdmg
-todollars <- function(ammount, expfactor) {
-    if (expfactor == "K") { ammount * 1000 }
-    else if (expfactor == "M") { ammount * 1000000 }
-    else if (expfactor == "B") { ammount * 1000000000 }
-    else { ammount }
-}
-
-storms <- data.frame(as.Date(stormdata$BGN_DATE, '%m/%d/%Y'),
-                     stormdata$STATE,
-                     stormdata$EVTYPE,
-                     stormdata$FATALITIES,
-                     stormdata$INJURIES,
-                     mapply(todollars, stormdata$PROPDMG, stormdata$PROPDMGEXP),
-                     mapply(todollars, stormdata$CROPDMG, stormdata$CROPDMGEXP),
-                     stringsAsFactors=F
-)
-
-names(storms) <- c("date","state","evtype",
-                   "fatalities","injuries","propdmg","cropdmg")
-
-
-# ver N/A. filtrar fechas si hace falta.
-# desde 1996 segun http://www.ncdc.noaa.gov/stormevents/details.jsp
-# nov 95
-
-storms96 <- storms[which(as.numeric(format(storms$date, "%Y%m")) >= 199512),]
-
-# cleansing
-storms96$evtype <- tolower(storms96$evtype)
-
-# sumar variables
-storms96$damages <- storms96$propdmg + storms96$cropdmg
-
-
-# convertir a dolares 2011.
 
 # agregado por tipo
 fatlpertype <- aggregate(fatalities ~ evtype,
@@ -120,23 +75,11 @@ outl <- boxplot(dmgspermonthworst5$damages)$out
 ggplot(subset(dmgspermonthworst5, ! damages %in% outl),
        aes(x=dwhen, y=damages/1000000)) +
     geom_line(aes(group=1)) +
-    facet_grid(evtype~.)
-
-ggplot(subset(dmgspermonthworst5, damages %in% outl),
-       aes(x=dwhen, y=damages/1000000, colour=evtype)) +
-    geom_point()
-
-ggplot(subset(dmgspermonthworst5, damages %in% outl & damages < 10000000000),
-       aes(x=dwhen, y=damages/1000000, colour=evtype)) +
-    geom_point()
-
-
-ggplot(subset(dmgspermonthworst5, damages < 1000000000),
-       aes(x=dwhen, y=damages/1000000)) +
-    geom_line(aes(group=1)) +
     facet_grid(evtype~.) +
+    theme(strip.text.y = element_text(
+        size = 8, colour = "red", angle = 90)) +
     labs(x="Date of Event", y="Damages (millions of US$)",
-         title="Damages per type since 1996.")
+         title="Damages per type since December 1995 (outliers filtered).")
 
 
 
