@@ -1,10 +1,11 @@
 # Draft script
 
 # leer datos
-library(ggplot2)
 Sys.setlocale("LC_TIME", "C")
+print("start")
 stormdata <- read.csv(bzfile('repdata-data-StormData.csv.bz2'),
                       stringsAsFactors = F)
+print("read")
 
 # extraer columnas.
 # fecha. estado. evtype. fatalities. injuries. propdmg cropdmg
@@ -27,19 +28,20 @@ storms <- data.frame(as.Date(stormdata$BGN_DATE, '%m/%d/%Y'),
 
 names(storms) <- c("date","state","evtype",
                    "fatalities","injuries","propdmg","cropdmg")
-
+print("mapply")
 
 # ver N/A. filtrar fechas si hace falta.
 # desde 1996 segun http://www.ncdc.noaa.gov/stormevents/details.jsp
 # nov 95
 storms96 <- storms[which(as.numeric(format(storms$date, "%Y%m")) >= 199601 &
                              !grepl("^summary",ignore.case=T,storms$evtype)),]
-
+print("which")
 
 storms96$evtype <- tolower(storms96$evtype)
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 storms96$evtype <- trim(storms96$evtype)
 storms96$evtype <- gsub("  "," ", storms96$evtype)
+print("whites")
 
 storms96$evtype[storms96$evtype == "hurricane edouard"] <- "hurricane"
 storms96$evtype[storms96$evtype == "hurricane/typhoon"] <- "hurricane"
@@ -52,6 +54,7 @@ storms96$evtype <- gsub("ice.*","ice", storms96$evtype)
 storms96$evtype <- gsub("icy.*","ice", storms96$evtype)
 storms96$evtype <- gsub("flood.*","flood", storms96$evtype)
 storms96$evtype <- gsub("flash flood.*","flash flood", storms96$evtype)
+print("rest")
 
 storms96$evtype <- as.factor(storms96$evtype)
 
