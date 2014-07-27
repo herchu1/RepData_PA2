@@ -8,3 +8,5 @@
 repdata-data-StormData.csv.bz2
 test_rpubscom.html
 us_severe_weather.html
+us_severe_weather_cache
+us_severe_weather_files
