@@ -39,8 +39,8 @@ dollars. We transformed them to dollars units.
 
 ```{r, cache=TRUE}
 todollars <- function(ammount, expfactor) {
-    if (expfactor %in% c("K","k")) { ammount * 1000 }
-    else if (expfactor == c("M","m")) { ammount * 1000000 }
+    if (expfactor == "K" | expfactor == "k") { ammount * 1000 }
+    else if (expfactor == "M" | expfactor == "m") { ammount * 1000000 }
     else if (expfactor == "B") { ammount * 1000000000 }
     else { ammount }
 }
