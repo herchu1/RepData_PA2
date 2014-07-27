@@ -33,7 +33,9 @@ names(storms) <- c("date","state","evtype",
 # desde 1996 segun http://www.ncdc.noaa.gov/stormevents/details.jsp
 # nov 95
 
-storms96 <- storms[which(as.numeric(format(storms$date, "%Y%m")) >= 199601),]
+storms96 <- storms[which(as.numeric(format(storms$date, "%Y%m")) >= 199601 &
+                             !grepl("^summary",ignore.case=T,storms$evtype)),]
+
 
 storms96$evtype <- tolower(storms96$evtype)
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
@@ -42,6 +44,15 @@ storms96$evtype <- trim(storms96$evtype)
 storms96$evtype[storms96$evtype == "hurricane edouard"] <- "hurricane"
 storms96$evtype[storms96$evtype == "hurricane/typhoon"] <- "hurricane"
 storms96$evtype[storms96$evtype == "typhoon"] <- "hurricane"
+storms96$evtype <- gsub("tstm.*","thunderstorm", storms96$evtype)
+storms96$evtype[storms96$evtype == "thunderstorms"] <- "thunderstorm"
+storms96$evtype[storms96$evtype == "thunderstorm wind"] <- "thunderstorm"
+storms96$evtype[storms96$evtype == "thunderstorm wind (g40)"] <- "thunderstorm"
+storms96$evtype <- gsub("ice.*","ice", storms96$evtype)
+storms96$evtype <- gsub("icy.*","ice", storms96$evtype)
+storms96$evtype <- gsub("flood.*","flood", storms96$evtype)
+storms96$evtype <- gsub("flash flood.*","flash flood", storms96$evtype)
+storms96$evtype <- gsub("  "," ", storms96$evtype)
 
 storms96$evtype <- as.factor(storms96$evtype)
 
