@@ -34,8 +34,8 @@ Sys.setlocale("LC_TIME", "C")
 stormdata <- read.csv(bzfile('repdata-data-StormData.csv.bz2'),
                       stringsAsFactors = F)
 todollars <- function(ammount, expfactor) {
-    if (expfactor == "K") { ammount * 1000 }
-    else if (expfactor == "M") { ammount * 1000000 }
+    if (expfactor %in% c("K","k")) { ammount * 1000 }
+    else if (expfactor == c("M","m")) { ammount * 1000000 }
     else if (expfactor == "B") { ammount * 1000000000 }
     else { ammount }
 }
