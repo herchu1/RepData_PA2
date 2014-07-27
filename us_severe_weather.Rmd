@@ -23,8 +23,6 @@ events since 1950 including location, duration and estimates in
 property damages and fatalities and injuries.
 
 The data comes in a cvs compressed file.
-Estimates of damages are coded in thousands, millions and billions
-dollars. We transformed them to dollars units.
 
 ```{r, results='hide'}
 library(ggplot2)
@@ -32,7 +30,14 @@ Sys.setlocale("LC_TIME", "C")
 ```
 ```{r, cache=TRUE}
 stormdata <- read.csv(bzfile('repdata-data-StormData.csv.bz2'),
+                      comment.char = "", nrows = 1500000,
                       stringsAsFactors = F)
+```
+
+Estimates of damages are coded in thousands, millions and billions
+dollars. We transformed them to dollars units.
+
+```{r, cache=TRUE}
 todollars <- function(ammount, expfactor) {
     if (expfactor %in% c("K","k")) { ammount * 1000 }
     else if (expfactor == c("M","m")) { ammount * 1000000 }
